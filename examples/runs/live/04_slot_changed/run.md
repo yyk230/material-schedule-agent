@@ -26,10 +26,10 @@
 
 | 步骤 | 动作 | 参数 | 依据 | 返回摘要 | 后续动作 |
 |---|---|---|---|---|---|
-| 1 | get_material | {"material_id": "M01"} | 先读取素材元数据，确认字段完整性后再做规则检查 | 《秋季通勤穿搭指南》；字段完整 | check_rules |
-| 2 | check_rules | {"material_id": "M01"} | 按审核规则检查素材，确认风险等级与缺失字段 | 风险 none；命中 无；缺失 无 | query_slots |
-| 3 | query_slots | {"material_id": "M01", "time": "18:00"} | 查询 douyin 2026-11-05 18:00 是否可用，以决定能否按请求时间排期 | 18:00 被 X90 占用；可选 20:00/16:00/15:00 | save_schedule_draft |
-| 4 | save_schedule_draft | {"material_id": "M01", "time": "20:00", "pending_confirmations": ["原请求时间 18:00 已被素材 X90 占用，建议改为同日同渠道 20:00，请确认是否接受该替代时间", "该素材 time_hard=false，允许改期，但改期需您确认后草稿方可生效"]} | 规则检查无风险且字段完整，18:00 被占用而 time_hard=false，故按最近替代时间 20:00 保存待确认草稿 | 已保存 D-0002 20:00 (pending_confirmation)；替换 ['D-0001'] | finish |
+| 1 | get_material | {"material_id": "M01"} | 先读取素材 M01 的元数据，了解字段完整性再决定后续审核步骤 | 《秋季通勤穿搭指南》；字段完整 | check_rules |
+| 2 | check_rules | {"material_id": "M01"} | 读取后按审核规则检查素材是否存在禁用词、版权、广告标识及缺失字段 | 风险 none；命中 无；缺失 无 | query_slots |
+| 3 | query_slots | {"material_id": "M01", "time": "18:00"} | 规则检查无风险，查询 douyin 2026-11-05 18:00 时段是否可用 | 18:00 被 X90 占用；可选 20:00/16:00/15:00 | save_schedule_draft |
+| 4 | save_schedule_draft | {"material_id": "M01", "time": "20:00", "pending_confirmations": ["原请求时间 18:00 已被素材 X90 占用，建议改到同日同渠道（douyin 2026-11-05）20:00，请确认是否接受该替代时段"]} | 18:00 被 X90 占用且 time_hard=false，选用最接近的晚间时段 20:00 保存草稿并附待确认项 | 已保存 D-0002 20:00 (pending_confirmation)；替换 ['D-0001'] | finish |
 | 5 | finish | 见最终报告 |  | 结论: M01=needs_confirmation | 结束：M01=needs_confirmation |
 
 ## 最终报告
@@ -78,9 +78,7 @@ summary: `{"incomplete": [], "blocked": [], "info_missing": [], "save_failed": [
       },
       "slot_changed": true,
       "pending_confirmations": [
-        "原请求时间 18:00（douyin / 2026-11-05）已被素材 X90 占用，建议改为同日同渠道 20:00，需您确认",
-        "如不接受 20:00，可选替代时间为 16:00 或 15:00，请告知希望改排的时段",
-        "当前仅为排期草稿（D-0002），未发布；确认后方可进入发布流程"
+        "原请求时间 18:00 已被素材 X90 占用（douyin 2026-11-05），已按 time_hard=false 改用同日同渠道最近空闲时段 20:00 保存草稿 D-0002，需用户确认；如不接受，可选替代时段还有 16:00、15:00"
       ],
       "draft": {
         "status": "saved",
@@ -94,7 +92,7 @@ summary: `{"incomplete": [], "blocked": [], "info_missing": [], "save_failed": [
         "state": "pending_confirmation"
       },
       "publish_status": "not_published",
-      "reason": "素材字段完整、规则检查无风险；请求的 18:00 被 X90 占用，因 time_hard=false 已按最近可用替代时间 20:00 保存草稿，结论为待确认。"
+      "reason": "素材字段完整、规则检查无风险；请求的 18:00 被 X90 占用，因 time_hard=false 已改存 20:00 草稿，等待用户确认替代时段"
     }
   ]
 }

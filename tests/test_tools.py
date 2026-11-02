@@ -42,6 +42,20 @@ def test_rule_levels(make_box):
     assert call(box, "check_rules", material_id="M01")["data"]["risk_level"] == "none"
 
 
+def test_ad_label_rule(make_box):
+    box = make_box(make_request(("M08", "09:00"), ("M04", "16:00")))
+    ad = call(box, "check_rules", material_id="M08")["data"]
+    assert ad["risk_level"] == "high" and [v["rule_id"] for v in ad["violations"]] == ["R004"]
+    # 非广告类素材不受 R004 影响
+    assert [v["rule_id"] for v in call(box, "check_rules", material_id="M04")["data"]["violations"]] == ["R002"]
+
+
+def test_ad_label_present_passes(make_box):
+    box = make_box(make_request(("M08", "09:00")))
+    box.ds.materials["M08"] = {**box.ds.materials["M08"], "ad_label": True}
+    assert call(box, "check_rules", material_id="M08")["data"]["risk_level"] == "none"
+
+
 def test_material_outside_request_is_not_found(make_box):
     box = make_box(make_request(("M01", "18:00")))
     assert code(call(box, "get_material", material_id="M06")) == "not_found"

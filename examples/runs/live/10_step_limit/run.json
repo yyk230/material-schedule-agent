@@ -36,11 +36,11 @@
       "args": {
         "material_id": "M02"
       },
-      "reason": "开始处理 M02，先读取素材元数据以了解字段完整性",
+      "reason": "先读取 M02 素材元数据，了解字段完整性以便后续规则检查",
       "ok": true,
       "summary": "《城市夜跑 Vlog》；缺失 copyright_status",
       "error_code": null,
-      "model_note": "我先读取两个素材的元数据。"
+      "model_note": "I'll start by reading both materials' metadata."
     },
     {
       "step": 1,
@@ -49,7 +49,7 @@
       "args": {
         "material_id": "M03"
       },
-      "reason": "开始处理 M03，先读取素材元数据以了解字段完整性",
+      "reason": "先读取 M03 素材元数据，了解字段完整性以便后续规则检查",
       "ok": true,
       "summary": "《周末露营装备清单》；缺失 owner",
       "error_code": null,
@@ -62,11 +62,11 @@
       "args": {
         "material_id": "M02"
       },
-      "reason": "M02 缺少 copyright_status，先做规则检查确认风险与缺失字段",
+      "reason": "对 M02 做规则检查，确认风险等级与缺失字段",
       "ok": true,
       "summary": "风险 none；命中 R001；缺失 ['copyright_status']",
       "error_code": null,
-      "model_note": "两个素材各有字段缺失，我先做规则检查确认命中情况。"
+      "model_note": "Now let me run rule checks on both."
     },
     {
       "step": 2,
@@ -75,7 +75,7 @@
       "args": {
         "material_id": "M03"
       },
-      "reason": "M03 缺少 owner，先做规则检查确认风险与缺失字段",
+      "reason": "对 M03 做规则检查，确认风险等级与缺失字段",
       "ok": true,
       "summary": "风险 none；命中 R001；缺失 ['owner']",
       "error_code": null,

@@ -39,7 +39,8 @@ TOOL_SCHEMAS: list[dict[str, Any]] = [
     ),
     _fn(
         "check_rules",
-        "按审核规则检查素材，返回风险等级(none/medium/high)、缺失字段和命中规则。",
+        "按审核规则检查素材，返回风险等级(none/medium/high)、缺失字段和命中规则"
+        "（R001 缺失字段、R002 禁用词、R003 版权待确认、R004 广告未标识）。",
         {"material_id": {"type": "string"}, "reason": REASON_PROP},
         ["material_id", "reason"],
     ),
@@ -213,6 +214,9 @@ class ToolBox:
         risk = "none"
         if hits:
             violations.append({"rule_id": "R002", "detail": f"标题或摘要含禁用词: {', '.join(hits)}"})
+            risk = "high"
+        if m.get("category") in rules.get("ad_categories", []) and m.get("ad_label") is not True:
+            violations.append({"rule_id": "R004", "detail": f"{m.get('category')}类素材未带广告标识"})
             risk = "high"
         if m.get("copyright_status") == "pending":
             violations.append({"rule_id": "R003", "detail": "版权状态为 pending，需确认授权"})

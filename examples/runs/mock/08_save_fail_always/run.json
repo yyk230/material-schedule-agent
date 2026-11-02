@@ -100,16 +100,18 @@
         "results": [
           {
             "material_id": "M06",
-            "decision": "approved",
+            "decision": "needs_confirmation",
             "suggested_time": "10:00",
-            "pending_confirmations": [],
-            "reason": "无风险，请求时间可用；草稿保存失败（tool_unavailable）"
+            "pending_confirmations": [
+              "草稿保存失败（tool_unavailable），10:00 尚未落库，请稍后重试保存或人工录入"
+            ],
+            "reason": "存在待确认事项；草稿保存失败（tool_unavailable）"
           }
         ]
       },
       "reason": "",
       "ok": true,
-      "summary": "结论: M06=approved",
+      "summary": "结论: M06=needs_confirmation",
       "error_code": null,
       "model_note": null
     }
@@ -137,7 +139,7 @@
     "items": [
       {
         "material_id": "M06",
-        "review_status": "approved",
+        "review_status": "needs_confirmation",
         "risk_level": "none",
         "risk_reasons": [],
         "missing_fields": [],
@@ -152,7 +154,9 @@
           "time": "10:00"
         },
         "slot_changed": false,
-        "pending_confirmations": [],
+        "pending_confirmations": [
+          "草稿保存失败（tool_unavailable），10:00 尚未落库，请稍后重试保存或人工录入"
+        ],
         "draft": {
           "status": "failed",
           "draft_id": null,
@@ -161,7 +165,7 @@
         },
         "active_draft": null,
         "publish_status": "not_published",
-        "reason": "无风险，请求时间可用；草稿保存失败（tool_unavailable）"
+        "reason": "存在待确认事项；草稿保存失败（tool_unavailable）"
       }
     ]
   }

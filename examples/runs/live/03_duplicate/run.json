@@ -29,59 +29,58 @@
       "args": {
         "material_id": "M01"
       },
-      "reason": "先读取 M01 的素材元数据，确认字段完整性以便后续规则检查",
+      "reason": "先读取素材 M01 的元数据，了解字段完整性与内容情况",
       "ok": true,
       "summary": "《秋季通勤穿搭指南》；字段完整",
-      "error_code": null,
-      "model_note": "I'll start by reading the material metadata and running the rule check for M01."
-    },
-    {
-      "step": 1,
-      "kind": "tool",
-      "tool": "check_rules",
-      "args": {
-        "material_id": "M01"
-      },
-      "reason": "对 M01 执行审核规则检查，确定风险等级与缺失字段",
-      "ok": true,
-      "summary": "风险 none；命中 无；缺失 无",
       "error_code": null,
       "model_note": null
     },
     {
       "step": 2,
       "kind": "tool",
+      "tool": "check_rules",
+      "args": {
+        "material_id": "M01"
+      },
+      "reason": "按审核规则检查 M01，确认风险等级与缺失字段",
+      "ok": true,
+      "summary": "风险 none；命中 无；缺失 无",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 3,
+      "kind": "tool",
       "tool": "query_slots",
       "args": {
         "material_id": "M01",
         "time": "18:00"
       },
-      "reason": "M01 无风险且字段完整，需确认 douyin 2026-11-05 18:00 时段是否可用",
+      "reason": "确认 douyin 2026-11-05 18:00 时段是否可用",
       "ok": true,
       "summary": "18:00 被 X90 占用；可选 19:00/17:00/20:00",
       "error_code": null,
-      "model_note": "M01 字段完整、无风险，接下来查询请求时间 18:00 是否可用。"
+      "model_note": null
     },
     {
-      "step": 3,
+      "step": 4,
       "kind": "tool",
       "tool": "save_schedule_draft",
       "args": {
         "material_id": "M01",
         "time": "19:00",
         "pending_confirmations": [
-          "原请求时间 18:00 已被素材 X90 占用，建议改为同日同渠道（douyin 2026-11-05）的 19:00，请确认是否接受该时段",
-          "如不接受 19:00，可选替代时段还有 17:00、20:00，请告知希望改排的具体时间"
+          "原请求时间 18:00 已被素材 X90 占用，建议改为同日同渠道 19:00，需用户确认是否接受该替代时段"
         ]
       },
-      "reason": "M01 审核无风险且字段完整，但 18:00 被占用且 time_hard=false，故选用最近替代时间 19:00 存草稿并交用户确认",
+      "reason": "18:00 被 X90 占用且 time_hard=false，选用替代时间 19:00 保存草稿并附待确认项",
       "ok": true,
       "summary": "命中已有草稿 D-0001 19:00 (pending_confirmation)",
       "error_code": null,
-      "model_note": "请求时间 18:00 已被 X90 占用，M01 的 time_hard=false，可选用替代时间并附待确认项保存草稿。"
+      "model_note": null
     },
     {
-      "step": 4,
+      "step": 5,
       "kind": "finish",
       "tool": "finish",
       "args": {
@@ -91,10 +90,9 @@
             "decision": "needs_confirmation",
             "suggested_time": "19:00",
             "pending_confirmations": [
-              "原请求时间 18:00 已被素材 X90 占用，建议改为同日同渠道（douyin 2026-11-05）的 19:00，请确认是否接受该时段",
-              "如不接受 19:00，可选替代时段还有 17:00、20:00，请告知希望改排的具体时间"
+              "原请求时间 2026-11-05 18:00（douyin）已被素材 X90 占用，建议改为同日同渠道 19:00，需用户确认是否接受该替代时段"
             ],
-            "reason": "M01《秋季通勤穿搭指南》字段完整、版权状态 authorized，规则检查风险等级为 none；但请求的 18:00 时段已被 X90 占用，因 time_hard=false，已按最近替代时间 19:00 保存排期草稿 D-0001（仅草稿，未发布），待用户确认改期。渠道 douyin 与日期 2026-11-05 保持不变。"
+            "reason": "M01 字段完整、规则检查无风险（risk none）；但请求的 18:00 时段被 X90 占用，因 time_hard=false，已按替代时间 19:00 保存排期草稿（D-0001，状态 pending_confirmation），渠道与日期保持不变，待用户确认改期。"
           }
         ]
       },
@@ -112,7 +110,7 @@
     "request_id": "REQ-002",
     "mode": "live",
     "model": "qwen3.8-omni-flash",
-    "steps_used": 4,
+    "steps_used": 5,
     "tool_calls_used": 4,
     "finish_rejections": 0,
     "summary": {
@@ -144,8 +142,7 @@
         },
         "slot_changed": true,
         "pending_confirmations": [
-          "原请求时间 18:00 已被素材 X90 占用，建议改为同日同渠道（douyin 2026-11-05）的 19:00，请确认是否接受该时段",
-          "如不接受 19:00，可选替代时段还有 17:00、20:00，请告知希望改排的具体时间"
+          "原请求时间 2026-11-05 18:00（douyin）已被素材 X90 占用，建议改为同日同渠道 19:00，需用户确认是否接受该替代时段"
         ],
         "draft": {
           "status": "duplicate",
@@ -159,7 +156,7 @@
           "state": "pending_confirmation"
         },
         "publish_status": "not_published",
-        "reason": "M01《秋季通勤穿搭指南》字段完整、版权状态 authorized，规则检查风险等级为 none；但请求的 18:00 时段已被 X90 占用，因 time_hard=false，已按最近替代时间 19:00 保存排期草稿 D-0001（仅草稿，未发布），待用户确认改期。渠道 douyin 与日期 2026-11-05 保持不变。"
+        "reason": "M01 字段完整、规则检查无风险（risk none）；但请求的 18:00 时段被 X90 占用，因 time_hard=false，已按替代时间 19:00 保存排期草稿（D-0001，状态 pending_confirmation），渠道与日期保持不变，待用户确认改期。"
       }
     ]
   }

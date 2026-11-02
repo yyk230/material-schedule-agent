@@ -2,6 +2,7 @@
   "request_id": "REQ-004",
   "items": [
     {"material_id": "M04", "channel": "douyin", "date": "2026-11-05", "time": "16:00"},
-    {"material_id": "M05", "channel": "douyin", "date": "2026-11-05", "time": "11:00"}
+    {"material_id": "M05", "channel": "douyin", "date": "2026-11-05", "time": "11:00"},
+    {"material_id": "M08", "channel": "douyin", "date": "2026-11-05", "time": "09:00"}
   ]
 }

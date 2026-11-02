@@ -33,11 +33,11 @@
 | 3 | query_slots | {"material_id": "M06", "time": "10:00"} | 查询请求时间 10:00 是否可用 | 10:00 可用；可选 11:00/09:00/08:00 | save_schedule_draft |
 | 4 | save_schedule_draft | {"material_id": "M06", "time": "10:00", "pending_confirmations": []} | 保存 10:00 的草稿 | 保存失败: tool_unavailable - 草稿存储暂时不可用，本次未保存 | save_schedule_draft |
 | 5 | save_schedule_draft | {"material_id": "M06", "time": "10:00", "pending_confirmations": []} | 保存 10:00 的草稿 | 保存失败: tool_unavailable - 草稿存储暂时不可用，本次未保存 | finish |
-| 6 | finish | 见最终报告 |  | 结论: M06=approved | 结束：M06=approved |
+| 6 | finish | 见最终报告 |  | 结论: M06=needs_confirmation | 结束：M06=needs_confirmation |
 
 ## 最终报告
 
-- M06: approved | 风险 none | 请求 10:00 -> 建议 10:00 | 草稿 failed (tool_unavailable) | not_published
+- M06: needs_confirmation | 风险 none | 请求 10:00 -> 建议 10:00 | 草稿 failed (tool_unavailable) | not_published
 
 summary: `{"incomplete": [], "blocked": [], "info_missing": [], "save_failed": ["M06"], "needs_confirmation": [], "ready": []}`
 
@@ -65,7 +65,7 @@ summary: `{"incomplete": [], "blocked": [], "info_missing": [], "save_failed": [
   "items": [
     {
       "material_id": "M06",
-      "review_status": "approved",
+      "review_status": "needs_confirmation",
       "risk_level": "none",
       "risk_reasons": [],
       "missing_fields": [],
@@ -80,7 +80,9 @@ summary: `{"incomplete": [], "blocked": [], "info_missing": [], "save_failed": [
         "time": "10:00"
       },
       "slot_changed": false,
-      "pending_confirmations": [],
+      "pending_confirmations": [
+        "草稿保存失败（tool_unavailable），10:00 尚未落库，请稍后重试保存或人工录入"
+      ],
       "draft": {
         "status": "failed",
         "draft_id": null,
@@ -89,7 +91,7 @@ summary: `{"incomplete": [], "blocked": [], "info_missing": [], "save_failed": [
       },
       "active_draft": null,
       "publish_status": "not_published",
-      "reason": "无风险，请求时间可用；草稿保存失败（tool_unavailable）"
+      "reason": "存在待确认事项；草稿保存失败（tool_unavailable）"
     }
   ]
 }

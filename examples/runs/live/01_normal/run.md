@@ -26,10 +26,10 @@
 
 | 步骤 | 动作 | 参数 | 依据 | 返回摘要 | 后续动作 |
 |---|---|---|---|---|---|
-| 1 | get_material | {"material_id": "M06"} | 先读取 M06 素材元数据，确认字段完整性以便后续规则检查 | 《家常菜三分钟教程》；字段完整 | check_rules |
-| 1 | check_rules | {"material_id": "M06"} | 对 M06 做审核规则检查，确认风险等级与缺失字段 | 风险 none；命中 无；缺失 无 | query_slots |
+| 1 | get_material | {"material_id": "M06"} | 读取素材 M06 元数据，作为审核与排期的基础 | 《家常菜三分钟教程》；字段完整 | check_rules |
+| 1 | check_rules | {"material_id": "M06"} | 按审核规则检查 M06 的风险与缺失字段 | 风险 none；命中 无；缺失 无 | query_slots |
 | 2 | query_slots | {"material_id": "M06", "time": "10:00"} | M06 无风险且字段完整，查询 douyin 2026-11-05 10:00 是否可用 | 10:00 可用；可选 11:00/09:00/08:00 | save_schedule_draft |
-| 3 | save_schedule_draft | {"material_id": "M06", "time": "10:00", "pending_confirmations": []} | M06 规则无风险、字段完整且 10:00 可用，按请求时间保存排期草稿 | 已保存 D-0001 10:00 (ready) | finish |
+| 3 | save_schedule_draft | {"material_id": "M06", "time": "10:00", "pending_confirmations": []} | M06 规则检查无风险、字段完整，请求时段可用，按原请求时间保存草稿 | 已保存 D-0001 10:00 (ready) | finish |
 | 4 | finish | 见最终报告 |  | 结论: M06=approved | 结束：M06=approved |
 
 ## 最终报告
@@ -90,7 +90,7 @@ summary: `{"incomplete": [], "blocked": [], "info_missing": [], "save_failed": [
         "state": "ready"
       },
       "publish_status": "not_published",
-      "reason": "字段完整、规则检查无风险（risk none），douyin 2026-11-05 10:00 时段可用，已按请求时间保存排期草稿 D-0001（仅草稿，未发布）。"
+      "reason": "M06《家常菜三分钟教程》字段完整、版权已授权，规则检查无风险（risk none）；douyin 2026-11-05 10:00 时段可用，已按请求时间保存排期草稿 D-0001（仅草稿，未发布），无需额外确认。"
     }
   ]
 }

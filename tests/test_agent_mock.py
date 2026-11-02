@@ -89,6 +89,11 @@ def test_06_rule_risk(tmp_state):
     assert m5["review_status"] == "needs_confirmation" and m5["risk_level"] == "medium"
     assert any(x.startswith("R003") for x in m5["risk_reasons"])
     assert m5["suggested_slot"]["time"] == "11:00" and m5["draft"]["state"] == "pending_confirmation"
+    m8 = item(r, "M08")
+    assert m8["review_status"] == "blocked" and m8["risk_level"] == "high"
+    assert any(x.startswith("R004") for x in m8["risk_reasons"]) and m8["draft"]["status"] == "not_saved"
+    assert not [s for s in tool_calls(r, "query_slots") if s["args"]["material_id"] in ("M04", "M08")]
+    assert r.report["summary"]["blocked"] == ["M04", "M08"]
 
 
 def test_07_hard_conflict(tmp_state):
@@ -102,7 +107,8 @@ def test_07_hard_conflict(tmp_state):
 def test_08_save_fail_always(tmp_state):
     r = run("case01_normal.json", tmp_state, fault="save=always")
     m = item(r, "M06")
-    assert m["review_status"] == "approved"
+    assert m["review_status"] == "needs_confirmation" and m["suggested_slot"]["time"] == "10:00"
+    assert any("草稿保存失败" in p for p in m["pending_confirmations"])
     assert m["draft"] == {"status": "failed", "draft_id": None, "state": None, "error": "tool_unavailable"}
     assert m["active_draft"] is None
     assert len(tool_calls(r, "save_schedule_draft")) == 2

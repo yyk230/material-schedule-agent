@@ -26,11 +26,11 @@
 
 | 步骤 | 动作 | 参数 | 依据 | 返回摘要 | 后续动作 |
 |---|---|---|---|---|---|
-| 1 | get_material | {"material_id": "M01"} | 读取 M01 素材元数据以判断字段完整性与审核前提 | 《秋季通勤穿搭指南》；字段完整 | check_rules |
-| 2 | check_rules | {"material_id": "M01"} | 按审核规则检查 M01 的风险等级与缺失字段 | 风险 none；命中 无；缺失 无 | query_slots |
-| 3 | query_slots | {"material_id": "M01", "time": "18:00"} | 确认 douyin 2026-11-05 18:00 是否可用，以便保存排期草稿 | 18:00 被 X90 占用；可选 19:00/17:00/20:00 | save_schedule_draft |
-| 4 | save_schedule_draft | {"material_id": "M01", "time": "19:00", "pending_confirmations": ["原请求时间 2026-11-05 18:00（douyin）已被素材 X90 占用，建议改为同日同渠道 19:00，请确认是否接受该调整", "如不接受 19:00，可选替代时间为 17:00 或 20:00"]} | 素材无风险且字段完整，原时间被占用但 time_hard=false，故按替代时间 19:00 保存草稿并请求用户确认 | 已保存 D-0001 19:00 (pending_confirmation) | finish |
-| 5 | finish | 见最终报告 |  | 结论: M01=needs_confirmation | 结束：M01=needs_confirmation |
+| 1 | get_material | {"material_id": "M01"} | 读取素材元数据以判断字段完整性与后续规则检查 | 《秋季通勤穿搭指南》；字段完整 | check_rules |
+| 2 | check_rules | {"material_id": "M01"} | 按审核规则检查素材是否存在禁用词、版权、广告标识及缺失字段 | 风险 none；命中 无；缺失 无 | query_slots |
+| 3 | query_slots | {"material_id": "M01", "time": "18:00"} | 确认 douyin 2026-11-05 18:00 时段是否空闲，以决定能否按请求时间排期 | 18:00 被 X90 占用；可选 19:00/17:00/20:00 | save_schedule_draft |
+| 4 | save_schedule_draft | {"material_id": "M01", "time": "19:00", "pending_confirmations": ["原请求时间 18:00 已被素材 X90 占用，建议改为同日同渠道（douyin 2026-11-05）19:00，请确认是否接受该时段", "如不接受 19:00，可选替代时段为 17:00 或 20:00，请告知希望改排的时段"]} | 素材无风险且字段完整，但请求时段被占用且 time_hard=false，故选用最近替代时间 19:00 保存草稿并附待确认项 | 已保存 D-0001 19:00 (pending_confirmation) | finish |
+| 5 | finish | 见最终报告 | 模型说明: 草稿已成功保存（D-0001，状态 pending_confirmation）。现在提交结论。 | 结论: M01=needs_confirmation | 结束：M01=needs_confirmation |
 
 ## 最终报告
 
@@ -78,8 +78,8 @@ summary: `{"incomplete": [], "blocked": [], "info_missing": [], "save_failed": [
       },
       "slot_changed": true,
       "pending_confirmations": [
-        "原请求时间 2026-11-05 18:00（douyin）已被素材 X90 占用，建议改为同日同渠道 19:00，请确认是否接受该调整",
-        "如不接受 19:00，可选替代时间为 17:00 或 20:00"
+        "原请求时间 18:00 已被素材 X90 占用，建议改为同日同渠道（douyin 2026-11-05）19:00，请确认是否接受该时段",
+        "如不接受 19:00，可选替代时段为 17:00 或 20:00，请告知希望改排的时段"
       ],
       "draft": {
         "status": "saved",
@@ -93,7 +93,7 @@ summary: `{"incomplete": [], "blocked": [], "info_missing": [], "save_failed": [
         "state": "pending_confirmation"
       },
       "publish_status": "not_published",
-      "reason": "M01 字段完整、规则检查无风险（risk none）；请求的 18:00 在 douyin 2026-11-05 已被 X90 占用，因 time_hard=false，已按替代时间 19:00 保存排期草稿（D-0001，状态 pending_confirmation），未发布，需用户确认时间调整。"
+      "reason": "素材字段完整、规则检查无风险（risk none）；但请求时段 18:00 被 X90 占用，因 time_hard=false 已按最近替代时间 19:00 保存排期草稿 D-0001（未发布），需用户确认时段变更。"
     }
   ]
 }

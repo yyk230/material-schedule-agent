@@ -75,7 +75,7 @@ class MockLLM:
                 return _result(item, "info_missing", "", [f"请补充字段: {missing}"], f"补查后仍缺失 {missing}，不保存草稿")
 
         if check["risk_level"] == "high":
-            details = "；".join(v["detail"] for v in check["violations"] if v["rule_id"] == "R002")
+            details = "；".join(v["detail"] for v in check["violations"] if v["rule_id"] in ("R002", "R004"))
             return _result(item, "blocked", "", [], f"高风险，阻断：{details}")
 
         requeried = False
@@ -114,6 +114,8 @@ class MockLLM:
         code = None if r["ok"] else r["error"]["code"]
         suggested = chosen if code in (None, "tool_unavailable") else ""
         save_note = "草稿已保存" if code is None else f"草稿保存失败（{code}）"
+        if code == "tool_unavailable":
+            pending.append(f"草稿保存失败（tool_unavailable），{chosen} 尚未落库，请稍后重试保存或人工录入")
         if pending:
             return _result(item, "needs_confirmation", suggested, pending, f"存在待确认事项；{save_note}")
         return _result(item, "approved", suggested, [], f"无风险，请求时间可用；{save_note}")

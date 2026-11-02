@@ -33,10 +33,10 @@
 
 | 步骤 | 动作 | 参数 | 依据 | 返回摘要 | 后续动作 |
 |---|---|---|---|---|---|
-| 1 | get_material | {"material_id": "M02"} | 开始处理 M02，先读取素材元数据以了解字段完整性 | 《城市夜跑 Vlog》；缺失 copyright_status | get_material |
-| 1 | get_material | {"material_id": "M03"} | 开始处理 M03，先读取素材元数据以了解字段完整性 | 《周末露营装备清单》；缺失 owner | check_rules |
-| 2 | check_rules | {"material_id": "M02"} | M02 缺少 copyright_status，先做规则检查确认风险与缺失字段 | 风险 none；命中 R001；缺失 ['copyright_status'] | check_rules |
-| 2 | check_rules | {"material_id": "M03"} | M03 缺少 owner，先做规则检查确认风险与缺失字段 | 风险 none；命中 R001；缺失 ['owner'] | 结束：incomplete（max_steps_exceeded） |
+| 1 | get_material | {"material_id": "M02"} | 先读取 M02 素材元数据，了解字段完整性以便后续规则检查 | 《城市夜跑 Vlog》；缺失 copyright_status | get_material |
+| 1 | get_material | {"material_id": "M03"} | 先读取 M03 素材元数据，了解字段完整性以便后续规则检查 | 《周末露营装备清单》；缺失 owner | check_rules |
+| 2 | check_rules | {"material_id": "M02"} | 对 M02 做规则检查，确认风险等级与缺失字段 | 风险 none；命中 R001；缺失 ['copyright_status'] | check_rules |
+| 2 | check_rules | {"material_id": "M03"} | 对 M03 做规则检查，确认风险等级与缺失字段 | 风险 none；命中 R001；缺失 ['owner'] | 结束：incomplete（max_steps_exceeded） |
 
 ## 最终报告
 

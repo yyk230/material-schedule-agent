@@ -27,7 +27,7 @@ flowchart TD
 |---|---|---|
 | `get_material` | 素材读取 | 返回原始数据叠加补查结果，缺失字段为 null |
 | `lookup_material_supplement` | 补查 | 查到的字段写入会话叠加层，后续 `check_rules` 可见 |
-| `check_rules` | 规则检查 | R001 缺失字段 / R002 禁用词 -> high / R003 版权 pending -> medium |
+| `check_rules` | 规则检查 | R001 缺失字段 / R002 禁用词 -> high / R003 版权 pending -> medium / R004 广告类未带广告标识 -> high |
 | `query_slots` | 时段查询 | 占用 = 排期表 + 其他素材的有效草稿；替代时间按小时差升序、同差取晚，最多 3 个 |
 | `save_schedule_draft` | 排期草稿保存 | 8 步校验后写入；幂等；替换旧草稿；原子写 |
 | `finish` | 结束 | 提交每个素材的结论，经 V1-V8 校验 |
@@ -75,7 +75,9 @@ flowchart TD
 
 ## 结论优先级
 
-`blocked > info_missing > needs_confirmation > approved`。保存失败不改变审核结论，单独体现在 `draft.status=failed` 与 `summary.save_failed`。
+`blocked > info_missing > needs_confirmation > approved`。
+
+保存失败：prompt 规定重试后仍失败时结论为 `needs_confirmation`，保留最后尝试的时间并在待确认项中写明需重试保存（这条规则来自 prompt 对比实验，见 [03-evaluation.md](03-evaluation.md)）。无论模型给出什么结论，报告中 `draft.status=failed`，并归入 `summary.save_failed`。
 
 ## 执行上限
 

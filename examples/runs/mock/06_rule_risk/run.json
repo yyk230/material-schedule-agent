@@ -15,6 +15,13 @@
         "date": "2026-11-05",
         "time": "11:00",
         "time_hard": false
+      },
+      {
+        "material_id": "M08",
+        "channel": "douyin",
+        "date": "2026-11-05",
+        "time": "09:00",
+        "time_hard": false
       }
     ]
   },
@@ -114,6 +121,32 @@
     },
     {
       "step": 7,
+      "kind": "tool",
+      "tool": "get_material",
+      "args": {
+        "material_id": "M08"
+      },
+      "reason": "先读取素材元数据",
+      "ok": true,
+      "summary": "《秋季护肤套装限时优惠》；字段完整",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 8,
+      "kind": "tool",
+      "tool": "check_rules",
+      "args": {
+        "material_id": "M08"
+      },
+      "reason": "检查审核规则与必填字段",
+      "ok": true,
+      "summary": "风险 high；命中 R004；缺失 无",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 9,
       "kind": "finish",
       "tool": "finish",
       "args": {
@@ -133,12 +166,19 @@
               "版权状态 pending，需确认授权"
             ],
             "reason": "存在待确认事项；草稿已保存"
+          },
+          {
+            "material_id": "M08",
+            "decision": "blocked",
+            "suggested_time": "",
+            "pending_confirmations": [],
+            "reason": "高风险，阻断：广告类素材未带广告标识"
           }
         ]
       },
       "reason": "",
       "ok": true,
-      "summary": "结论: M04=blocked，M05=needs_confirmation",
+      "summary": "结论: M04=blocked，M05=needs_confirmation，M08=blocked",
       "error_code": null,
       "model_note": null
     }
@@ -150,13 +190,14 @@
     "request_id": "REQ-004",
     "mode": "mock",
     "model": "mock-rule-policy",
-    "steps_used": 7,
-    "tool_calls_used": 6,
+    "steps_used": 9,
+    "tool_calls_used": 8,
     "finish_rejections": 0,
     "summary": {
       "incomplete": [],
       "blocked": [
-        "M04"
+        "M04",
+        "M08"
       ],
       "info_missing": [],
       "save_failed": [],
@@ -227,6 +268,32 @@
         },
         "publish_status": "not_published",
         "reason": "存在待确认事项；草稿已保存"
+      },
+      {
+        "material_id": "M08",
+        "review_status": "blocked",
+        "risk_level": "high",
+        "risk_reasons": [
+          "R004: 广告类素材未带广告标识"
+        ],
+        "missing_fields": [],
+        "requested_slot": {
+          "channel": "douyin",
+          "date": "2026-11-05",
+          "time": "09:00"
+        },
+        "suggested_slot": null,
+        "slot_changed": false,
+        "pending_confirmations": [],
+        "draft": {
+          "status": "not_saved",
+          "draft_id": null,
+          "state": null,
+          "error": null
+        },
+        "active_draft": null,
+        "publish_status": "not_published",
+        "reason": "高风险，阻断：广告类素材未带广告标识"
       }
     ]
   }

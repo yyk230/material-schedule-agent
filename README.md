@@ -29,6 +29,7 @@ python -m src.main --request examples/inputs/case02_conflict.json --out examples
 
 # 一键跑完 10 次运行（输出到 examples/runs/<mode>/）
 python scripts/run_examples.py --mode mock      # 或 live / both
+python scripts/run_examples.py --mode live --only 06_rule_risk   # 只重跑指定运行
 
 # 测试（结果写入 examples/test-results.txt）
 python scripts/run_tests.py
@@ -59,11 +60,12 @@ CLI 参数：
 | 重复提交只产生一份草稿 | 03_duplicate | `examples/runs/<mode>/03_duplicate/drafts.json` |
 | 更换占用时段并重复提交 | 04_slot_changed | `examples/runs/<mode>/04_slot_changed/{run.md,drafts.json}` |
 | 素材信息缺失（补查成功 / 失败） | 05_missing_info | `examples/runs/<mode>/05_missing_info/run.md` |
-| 规则风险（高风险阻断 / 中风险待确认） | 06_rule_risk | `examples/runs/<mode>/06_rule_risk/run.md` |
+| 规则风险（禁用词 / 广告未标识阻断，版权待确认） | 06_rule_risk | `examples/runs/<mode>/06_rule_risk/run.md` |
 | 确认边界（硬性时间不擅改） | 07_hard_conflict | `examples/runs/<mode>/07_hard_conflict/run.md` |
 | 保存失败须明确返回失败 | 08_save_fail_always | `examples/runs/<mode>/08_save_fail_always/run.md` |
 | 工具失败后由模型决定重试 | 09_save_fail_once | `examples/runs/<mode>/09_save_fail_once/run.md` |
 | 达到步数上限返回未完成 | 10_step_limit | `examples/runs/<mode>/10_step_limit/run.md` |
+| prompt 对比实验（保存失败的结论规则） | 08 改动前后 | `examples/experiments/prompt-save-failure/{before,after}/run.md` |
 | 测试结果 | — | `examples/test-results.txt` |
 
 `<mode>` 为 `mock`（离线规则策略）或 `live`（真实模型）。预期与实际结果对照见 [docs/03-evaluation.md](docs/03-evaluation.md)。
@@ -83,7 +85,7 @@ src/
   prompts.py     system prompt
   trace.py       run.json / run.md 输出
 data/            合成素材、补查源、审核规则、两套排期表
-examples/        inputs/ 请求，runs/ 运行记录，test-results.txt
+examples/        inputs/ 请求，runs/ 运行记录，experiments/ 对比实验，test-results.txt
 tests/           工具、防线、Mock 端到端、剧本化异常行为、live 冒烟
 docs/            01 需求 · 02 方案 · 03 评估 · 04 AI 使用 · 05 复盘
 scripts/         run_examples.py 运行矩阵，run_tests.py 测试并落盘

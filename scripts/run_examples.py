@@ -1,6 +1,6 @@
 """一键跑完运行矩阵（10 次运行），输出到 examples/runs/<mode>/<run_name>/。
 
-用法: python scripts/run_examples.py --mode mock|live|both
+用法: python scripts/run_examples.py --mode mock|live|both [--only RUN_NAME ...]
 """
 
 from __future__ import annotations
@@ -38,13 +38,32 @@ RUNS = [
 ]
 
 
-def run_mode(mode: str) -> int:
+def select_runs(only: list[str] | None) -> list[tuple]:
+    if not only:
+        return RUNS
+    unknown = set(only) - {r[0] for r in RUNS}
+    if unknown:
+        raise SystemExit(f"未知运行: {sorted(unknown)}")
+    chain = {r[0] for r in RUNS if r[3] == CONFLICT_STATE}
+    if chain & set(only) and not chain <= set(only):
+        raise SystemExit(f"{sorted(chain)} 共用草稿状态，必须一起运行")
+    return [r for r in RUNS if r[0] in only]
+
+
+def run_mode(mode: str, only: list[str] | None = None) -> int:
     runs_dir = Path("examples/runs") / mode
     state_root = Path(".state") / mode
-    for d in (runs_dir, state_root):
+    runs = select_runs(only)
+    if only:
+        targets = [runs_dir / r[0] for r in runs]
+        if any(r[3] for r in runs):
+            targets.append(state_root / CONFLICT_STATE)
+    else:
+        targets = [runs_dir, state_root]
+    for d in targets:
         shutil.rmtree(d, ignore_errors=True)
     print(f"===== mode: {mode} =====")
-    for name, req, extra, shared in RUNS:
+    for name, req, extra, shared in runs:
         state_dir = str(state_root / shared) if shared else tempfile.mkdtemp(prefix="agent-state-")
         out = str(runs_dir / name)
         print(f"\n--- {name} ({req} {extra or ''}) ---")
@@ -58,13 +77,15 @@ def main() -> int:
     load_dotenv()
     p = argparse.ArgumentParser()
     p.add_argument("--mode", choices=["mock", "live", "both"], default="mock")
-    mode = p.parse_args().mode
+    p.add_argument("--only", nargs="+", help="只重跑指定运行，例如 --only 06_rule_risk 08_save_fail_always")
+    args = p.parse_args()
+    mode = args.mode
     modes = ["mock", "live"] if mode == "both" else [mode]
     if "live" in modes and not (os.environ.get("OPENAI_API_KEY") and os.environ.get("MODEL_NAME")):
         print("错误: live 模式需要在 .env 中配置 OPENAI_API_KEY 与 MODEL_NAME", file=sys.stderr)
         return 1
     for m in modes:
-        run_mode(m)
+        run_mode(m, args.only)
     return 0
 
 

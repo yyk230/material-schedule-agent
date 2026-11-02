@@ -43,17 +43,21 @@
 
 4. **接入真实模型并决定交付方式**。我选择并配置了阿里云百炼的 `qwen3.8-omni-flash`。密钥只写在本地 `.env` 中，没有进入对话或仓库。仓库为公开仓库，提交作者使用 GitHub 隐私邮箱。
 
+5. **选定两项后续改进，由 AI 实现并运行**。第一版交付后，我从 AI 提出的改进候选中选定了下面两项，作为“效果验证与改进”：
+   - **新增审核规则 R004**：广告类素材必须带广告标识，否则判为高风险。新增了素材 M08 并放进规则风险用例，补了 2 个工具测试，测试从 66 个增加到 68 个。
+   - **prompt 对比实验**：第一版 live 中，保存持续失败时模型的结论与 Mock 不一致。为此在 prompt 中规定这种情况下的结论规则，对同一用例比较改动前后的 live 结果（见 `03-evaluation.md` 中的“prompt 对比实验”）。为保证所有 live 记录使用同一版 prompt，改动后完整重跑了 10 个用例。
+
 ## 个人验证
 
 - **审查方案与实现汇报**：逐轮阅读 AI 的方案和修订说明，对照题目的“必须验收”和“审核要点”提出复查要求（见上文）。
 - **核对运行结果与差异**：阅读 Mock 与 live 的结果汇总。重点确认了以下几点：
   - 参考实例（M01 想要 18:00 但已被占用，建议 19:00 并标为待确认，没有称已发布）在两种模式下都成立；
-  - live 08 的结论与 Mock 不同（模型判“待确认”，Mock 判“通过”），但两者都明确报告了保存失败，因此判断为合理的策略差异，不是缺陷，并要求如实写入 `03-evaluation.md`。
-- **关注 live 中防线没有被触发**：live 10 次运行里 finish 一次都没被打回，保存也没有被校验拒绝。所以工具层校验和 V1-V8 的有效性要靠 `tests/test_agent_scripted.py` 等测试来证明，这一点已在评估文档中写明。
+  - 第一版 live 08 的结论与 Mock 不同（模型判“待确认”，Mock 判“通过”）。两者都明确报告了保存失败，所以这不是缺陷；但它说明 prompt 存在规则空白，我据此选定做 prompt 对比实验。
+- **关注防线在 live 中是否被触发**：第一版 live 中校验一次都没有触发。重跑后，live 08 中模型把 finish 的 `results` 写成了字符串，被参数校验拦截，模型随后自行修正。其余校验的有效性仍主要靠 `tests/test_agent_scripted.py` 等测试证明，这一点已在评估文档中写明。
 - **安全检查**：确认 `.env` 在 `.gitignore` 中；推送后在远端查询 `.env` 返回 404；运行记录中的临时目录路径已脱敏为 `<tempdir>`。
 - **可复现的验证命令**（不需要模型 Key）：
   ```powershell
-  python scripts/run_tests.py                                   # 66 passed
+  python scripts/run_tests.py                                   # 68 passed
   python -m src.main --request examples/inputs/case02_conflict.json --mock
   python scripts/run_examples.py --mode mock
   ```

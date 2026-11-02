@@ -2,7 +2,7 @@
 
 - mode: `live`，model: `qwen3.8-omni-flash`
 - run_status: `completed`
-- steps_used: 5，tool_calls_used: 9，finish_rejections: 0
+- steps_used: 7，tool_calls_used: 10，finish_rejections: 0
 - config: `{"mode": "live", "model": "qwen3.8-omni-flash", "max_steps": 20, "max_tool_calls": 40, "max_finish_rejections": 2, "fault": null, "schedule": "data/schedule.json", "state_dir": "<tempdir>"}`
 
 ## 请求
@@ -33,16 +33,17 @@
 
 | 步骤 | 动作 | 参数 | 依据 | 返回摘要 | 后续动作 |
 |---|---|---|---|---|---|
-| 1 | get_material | {"material_id": "M02"} | 读取 M02 素材元数据以了解字段完整性 | 《城市夜跑 Vlog》；缺失 copyright_status | get_material |
-| 1 | get_material | {"material_id": "M03"} | 读取 M03 素材元数据以了解字段完整性 | 《周末露营装备清单》；缺失 owner | check_rules |
-| 1 | check_rules | {"material_id": "M02"} | 按审核规则检查 M02 的风险与缺失字段 | 风险 none；命中 R001；缺失 ['copyright_status'] | check_rules |
-| 1 | check_rules | {"material_id": "M03"} | 按审核规则检查 M03 的风险与缺失字段 | 风险 none；命中 R001；缺失 ['owner'] | lookup_material_supplement |
-| 2 | lookup_material_supplement | {"material_id": "M02", "fields": ["copyright_status"]} | M02 缺失 copyright_status，需从备用资料源补查 | 补查到 ['copyright_status']；仍缺 [] | lookup_material_supplement |
-| 2 | lookup_material_supplement | {"material_id": "M03", "fields": ["owner"]} | M03 缺失 owner，需从备用资料源补查 | 补查到 []；仍缺 ['owner'] | check_rules |
-| 3 | check_rules | {"material_id": "M02"} | 补查 copyright_status 后需重新确认 M02 风险等级 | 风险 none；命中 无；缺失 无 | query_slots |
-| 3 | query_slots | {"material_id": "M02", "time": "14:00"} | 确认 M02 请求的 14:00 时段是否可用 | 14:00 可用；可选 15:00/13:00/16:00 | save_schedule_draft |
-| 4 | save_schedule_draft | {"material_id": "M02", "time": "14:00", "pending_confirmations": []} | M02 补查后字段完整、无风险且请求时段 14:00 可用，按原请求保存草稿 | 已保存 D-0001 14:00 (ready) | finish |
-| 5 | finish | 见最终报告 |  | 结论: M02=approved，M03=info_missing | 结束：M02=approved，M03=info_missing |
+| 1 | get_material | {"material_id": "M02"} | 读取 M02 素材元数据，判断字段完整性以进入规则检查 | 《城市夜跑 Vlog》；缺失 copyright_status | get_material |
+| 1 | get_material | {"material_id": "M03"} | 读取 M03 素材元数据，判断字段完整性以进入规则检查 | 《周末露营装备清单》；缺失 owner | check_rules |
+| 2 | check_rules | {"material_id": "M02"} | 检查 M02 是否存在缺失字段、禁用词、版权与广告标识风险 | 风险 none；命中 R001；缺失 ['copyright_status'] | check_rules |
+| 2 | check_rules | {"material_id": "M03"} | 检查 M03 是否存在缺失字段、禁用词、版权与广告标识风险 | 风险 none；命中 R001；缺失 ['owner'] | lookup_material_supplement |
+| 3 | lookup_material_supplement | {"material_id": "M02", "fields": ["copyright_status"]} | M02 缺失 copyright_status，先补查再重跑规则检查 | 补查到 ['copyright_status']；仍缺 [] | lookup_material_supplement |
+| 3 | lookup_material_supplement | {"material_id": "M03", "fields": ["owner"]} | M03 缺失 owner，先补查再重跑规则检查 | 补查到 []；仍缺 ['owner'] | check_rules |
+| 4 | check_rules | {"material_id": "M02"} | copyright_status 已补齐，重新检查确认风险等级 | 风险 none；命中 无；缺失 无 | query_slots |
+| 5 | query_slots | {"material_id": "M02", "time": "14:00"} | M02 无风险且字段完整，确认请求时间 14:00 是否可用 | 14:00 可用；可选 15:00/13:00/16:00 | check_rules |
+| 5 | check_rules | {"material_id": "M03"} | 补查后再次确认 M03 的缺失字段与风险等级 | 风险 none；命中 R001；缺失 ['owner'] | save_schedule_draft |
+| 6 | save_schedule_draft | {"material_id": "M02", "time": "14:00", "pending_confirmations": []} | M02 字段完整、无风险且 14:00 可用，按请求时间保存草稿 | 已保存 D-0001 14:00 (ready) | finish |
+| 7 | finish | 见最终报告 | 模型说明: M02 草稿已保存成功；M03 补查后仍缺 owner，按规则不保存草稿。现在提交结论。 | 结论: M02=approved，M03=info_missing | 结束：M02=approved，M03=info_missing |
 
 ## 最终报告
 
@@ -59,8 +60,8 @@ summary: `{"incomplete": [], "blocked": [], "info_missing": ["M03"], "save_faile
   "request_id": "REQ-003",
   "mode": "live",
   "model": "qwen3.8-omni-flash",
-  "steps_used": 5,
-  "tool_calls_used": 9,
+  "steps_used": 7,
+  "tool_calls_used": 10,
   "finish_rejections": 0,
   "summary": {
     "incomplete": [],
@@ -105,7 +106,7 @@ summary: `{"incomplete": [], "blocked": [], "info_missing": ["M03"], "save_faile
         "state": "ready"
       },
       "publish_status": "not_published",
-      "reason": "补查得到 copyright_status=authorized 后字段完整、规则检查无风险（risk none），请求时段 douyin/2026-11-05 14:00 可用，已成功保存排期草稿 D-0001（仅草稿，未发布）。"
+      "reason": "copyright_status 经补查为 authorized，字段完整、规则检查无风险（risk none），douyin 2026-11-05 14:00 时段可用，草稿已保存成功（draft_id D-0001，状态 ready）。仅为草稿，尚未发布。"
     },
     {
       "material_id": "M03",
@@ -123,8 +124,8 @@ summary: `{"incomplete": [], "blocked": [], "info_missing": ["M03"], "save_faile
       "suggested_slot": null,
       "slot_changed": false,
       "pending_confirmations": [
-        "请提供 M03 的 owner（素材负责人）信息，缺失字段无法通过规则检查",
-        "owner 补齐后需确认是否仍使用原请求时间 2026-11-05 15:00（douyin）再保存草稿"
+        "缺少 owner（素材归属人）字段，备用资料源未能补查到，需内容团队补充确认后再排期",
+        "补充完成后需重新做规则检查并确认 douyin 2026-11-05 15:00 时段可用性，再保存草稿"
       ],
       "draft": {
         "status": "not_saved",
@@ -134,7 +135,7 @@ summary: `{"incomplete": [], "blocked": [], "info_missing": ["M03"], "save_faile
       },
       "active_draft": null,
       "publish_status": "not_published",
-      "reason": "备用资料源仍未查到 owner 字段，补查后 check_rules 仍报缺失字段 owner（R001），信息不完整故不保存草稿。待确认：请补充 M03《周末露营装备清单》的素材负责人 owner，补齐后可按原请求 douyin/2026-11-05 15:00 重新排期（该时段当前未被本次 M02 草稿占用）。"
+      "reason": "素材存在且版权状态 authorized、规则检查风险为 none，但 owner 字段缺失且 lookup_material_supplement 补查后仍为 still_missing，按规则判定 info_missing，未保存任何草稿。"
     }
   ]
 }

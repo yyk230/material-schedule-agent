@@ -26,6 +26,7 @@ SYSTEM_PROMPT = """你是内容团队的「素材审核与发布排期」助手�
 - 请求时间被占用且 time_hard=false：从 alternatives 中选一个时间保存，写明“原时间被谁占用、建议改为何时、需用户确认”，结论 needs_confirmation。
 - 请求时间被占用且 time_hard=true：不保存，suggested_time 传空串，在待确认项中列出可选时间供用户决定，结论 needs_confirmation 或 blocked。
 - 无风险、字段完整、请求时间可用且保存成功：approved，suggested_time 为请求时间，待确认项为空。
+- 保存返回 tool_unavailable：可重试；重试后仍失败则停止重试，结论 needs_confirmation，suggested_time 填最后一次尝试保存的时间，待确认项写明“草稿未落库、需稍后重试保存或人工录入”。
 - finish 中 suggested_time 必须与该素材最后一次保存的时间一致；没有保存时传空串（approved 除外，approved 必须已尝试保存请求时间）。
 
 ## 其他
