@@ -1,0 +1,287 @@
+{
+  "request": {
+    "request_id": "REQ-003",
+    "items": [
+      {
+        "material_id": "M02",
+        "channel": "douyin",
+        "date": "2026-11-05",
+        "time": "14:00",
+        "time_hard": false
+      },
+      {
+        "material_id": "M03",
+        "channel": "douyin",
+        "date": "2026-11-05",
+        "time": "15:00",
+        "time_hard": false
+      }
+    ]
+  },
+  "config": {
+    "mode": "mock",
+    "model": "mock-rule-policy",
+    "max_steps": 20,
+    "max_tool_calls": 40,
+    "max_finish_rejections": 2,
+    "fault": null,
+    "schedule": "data/schedule.json",
+    "state_dir": "<tempdir>"
+  },
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "get_material",
+      "args": {
+        "material_id": "M02"
+      },
+      "reason": "先读取素材元数据",
+      "ok": true,
+      "summary": "《城市夜跑 Vlog》；缺失 copyright_status",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "check_rules",
+      "args": {
+        "material_id": "M02"
+      },
+      "reason": "检查审核规则与必填字段",
+      "ok": true,
+      "summary": "风险 none；命中 R001；缺失 ['copyright_status']",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 3,
+      "kind": "tool",
+      "tool": "lookup_material_supplement",
+      "args": {
+        "material_id": "M02",
+        "fields": [
+          "copyright_status"
+        ]
+      },
+      "reason": "缺失 copyright_status，先补查",
+      "ok": true,
+      "summary": "补查到 ['copyright_status']；仍缺 []",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 4,
+      "kind": "tool",
+      "tool": "check_rules",
+      "args": {
+        "material_id": "M02"
+      },
+      "reason": "补查后重新检查规则",
+      "ok": true,
+      "summary": "风险 none；命中 无；缺失 无",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 5,
+      "kind": "tool",
+      "tool": "query_slots",
+      "args": {
+        "material_id": "M02",
+        "time": "14:00"
+      },
+      "reason": "查询请求时间 14:00 是否可用",
+      "ok": true,
+      "summary": "14:00 可用；可选 15:00/13:00/16:00",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 6,
+      "kind": "tool",
+      "tool": "save_schedule_draft",
+      "args": {
+        "material_id": "M02",
+        "time": "14:00",
+        "pending_confirmations": []
+      },
+      "reason": "保存 14:00 的草稿",
+      "ok": true,
+      "summary": "已保存 D-0001 14:00 (ready)",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 7,
+      "kind": "tool",
+      "tool": "get_material",
+      "args": {
+        "material_id": "M03"
+      },
+      "reason": "先读取素材元数据",
+      "ok": true,
+      "summary": "《周末露营装备清单》；缺失 owner",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 8,
+      "kind": "tool",
+      "tool": "check_rules",
+      "args": {
+        "material_id": "M03"
+      },
+      "reason": "检查审核规则与必填字段",
+      "ok": true,
+      "summary": "风险 none；命中 R001；缺失 ['owner']",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 9,
+      "kind": "tool",
+      "tool": "lookup_material_supplement",
+      "args": {
+        "material_id": "M03",
+        "fields": [
+          "owner"
+        ]
+      },
+      "reason": "缺失 owner，先补查",
+      "ok": true,
+      "summary": "补查到 []；仍缺 ['owner']",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 10,
+      "kind": "tool",
+      "tool": "check_rules",
+      "args": {
+        "material_id": "M03"
+      },
+      "reason": "补查后重新检查规则",
+      "ok": true,
+      "summary": "风险 none；命中 R001；缺失 ['owner']",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 11,
+      "kind": "finish",
+      "tool": "finish",
+      "args": {
+        "results": [
+          {
+            "material_id": "M02",
+            "decision": "approved",
+            "suggested_time": "14:00",
+            "pending_confirmations": [],
+            "reason": "无风险，请求时间可用；草稿已保存"
+          },
+          {
+            "material_id": "M03",
+            "decision": "info_missing",
+            "suggested_time": "",
+            "pending_confirmations": [
+              "请补充字段: owner"
+            ],
+            "reason": "补查后仍缺失 owner，不保存草稿"
+          }
+        ]
+      },
+      "reason": "",
+      "ok": true,
+      "summary": "结论: M02=approved，M03=info_missing",
+      "error_code": null,
+      "model_note": null
+    }
+  ],
+  "report": {
+    "run_status": "completed",
+    "incomplete_reason": null,
+    "error": null,
+    "request_id": "REQ-003",
+    "mode": "mock",
+    "model": "mock-rule-policy",
+    "steps_used": 11,
+    "tool_calls_used": 10,
+    "finish_rejections": 0,
+    "summary": {
+      "incomplete": [],
+      "blocked": [],
+      "info_missing": [
+        "M03"
+      ],
+      "save_failed": [],
+      "needs_confirmation": [],
+      "ready": [
+        "M02"
+      ]
+    },
+    "items": [
+      {
+        "material_id": "M02",
+        "review_status": "approved",
+        "risk_level": "none",
+        "risk_reasons": [],
+        "missing_fields": [],
+        "requested_slot": {
+          "channel": "douyin",
+          "date": "2026-11-05",
+          "time": "14:00"
+        },
+        "suggested_slot": {
+          "channel": "douyin",
+          "date": "2026-11-05",
+          "time": "14:00"
+        },
+        "slot_changed": false,
+        "pending_confirmations": [],
+        "draft": {
+          "status": "saved",
+          "draft_id": "D-0001",
+          "state": "ready",
+          "error": null
+        },
+        "active_draft": {
+          "draft_id": "D-0001",
+          "time": "14:00",
+          "state": "ready"
+        },
+        "publish_status": "not_published",
+        "reason": "无风险，请求时间可用；草稿已保存"
+      },
+      {
+        "material_id": "M03",
+        "review_status": "info_missing",
+        "risk_level": "none",
+        "risk_reasons": [],
+        "missing_fields": [
+          "owner"
+        ],
+        "requested_slot": {
+          "channel": "douyin",
+          "date": "2026-11-05",
+          "time": "15:00"
+        },
+        "suggested_slot": null,
+        "slot_changed": false,
+        "pending_confirmations": [
+          "请补充字段: owner"
+        ],
+        "draft": {
+          "status": "not_saved",
+          "draft_id": null,
+          "state": null,
+          "error": null
+        },
+        "active_draft": null,
+        "publish_status": "not_published",
+        "reason": "补查后仍缺失 owner，不保存草稿"
+      }
+    ]
+  }
+}

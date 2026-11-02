@@ -1,0 +1,19 @@
+{
+  "next_seq": 2,
+  "drafts": [
+    {
+      "draft_id": "D-0001",
+      "request_id": "REQ-004",
+      "material_id": "M05",
+      "channel": "douyin",
+      "date": "2026-11-05",
+      "time": "11:00",
+      "state": "pending_confirmation",
+      "pending_confirmations": [
+        "版权状态为 pending，需确认《经典电影混剪合集》所用片段的授权已获得（规则 R003）"
+      ],
+      "created_at": "2026-11-02T17:13:20",
+      "updated_at": "2026-11-02T17:13:20"
+    }
+  ]
+}

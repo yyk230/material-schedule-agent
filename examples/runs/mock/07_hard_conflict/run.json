@@ -1,0 +1,138 @@
+{
+  "request": {
+    "request_id": "REQ-005",
+    "items": [
+      {
+        "material_id": "M07",
+        "channel": "douyin",
+        "date": "2026-11-05",
+        "time": "18:00",
+        "time_hard": true
+      }
+    ]
+  },
+  "config": {
+    "mode": "mock",
+    "model": "mock-rule-policy",
+    "max_steps": 20,
+    "max_tool_calls": 40,
+    "max_finish_rejections": 2,
+    "fault": null,
+    "schedule": "data/schedule.json",
+    "state_dir": "<tempdir>"
+  },
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "get_material",
+      "args": {
+        "material_id": "M07"
+      },
+      "reason": "先读取素材元数据",
+      "ok": true,
+      "summary": "《新品发布会预告》；字段完整",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "check_rules",
+      "args": {
+        "material_id": "M07"
+      },
+      "reason": "检查审核规则与必填字段",
+      "ok": true,
+      "summary": "风险 none；命中 无；缺失 无",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 3,
+      "kind": "tool",
+      "tool": "query_slots",
+      "args": {
+        "material_id": "M07",
+        "time": "18:00"
+      },
+      "reason": "查询请求时间 18:00 是否可用",
+      "ok": true,
+      "summary": "18:00 被 X90 占用；可选 19:00/17:00/20:00",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 4,
+      "kind": "finish",
+      "tool": "finish",
+      "args": {
+        "results": [
+          {
+            "material_id": "M07",
+            "decision": "needs_confirmation",
+            "suggested_time": "",
+            "pending_confirmations": [
+              "硬性时段 18:00 已被 X90 占用，可选 19:00/17:00/20:00，请用户决定"
+            ],
+            "reason": "请求时间为硬性要求且已被占用，不擅自改时间，不保存草稿"
+          }
+        ]
+      },
+      "reason": "",
+      "ok": true,
+      "summary": "结论: M07=needs_confirmation",
+      "error_code": null,
+      "model_note": null
+    }
+  ],
+  "report": {
+    "run_status": "completed",
+    "incomplete_reason": null,
+    "error": null,
+    "request_id": "REQ-005",
+    "mode": "mock",
+    "model": "mock-rule-policy",
+    "steps_used": 4,
+    "tool_calls_used": 3,
+    "finish_rejections": 0,
+    "summary": {
+      "incomplete": [],
+      "blocked": [],
+      "info_missing": [],
+      "save_failed": [],
+      "needs_confirmation": [
+        "M07"
+      ],
+      "ready": []
+    },
+    "items": [
+      {
+        "material_id": "M07",
+        "review_status": "needs_confirmation",
+        "risk_level": "none",
+        "risk_reasons": [],
+        "missing_fields": [],
+        "requested_slot": {
+          "channel": "douyin",
+          "date": "2026-11-05",
+          "time": "18:00"
+        },
+        "suggested_slot": null,
+        "slot_changed": false,
+        "pending_confirmations": [
+          "硬性时段 18:00 已被 X90 占用，可选 19:00/17:00/20:00，请用户决定"
+        ],
+        "draft": {
+          "status": "not_saved",
+          "draft_id": null,
+          "state": null,
+          "error": null
+        },
+        "active_draft": null,
+        "publish_status": "not_published",
+        "reason": "请求时间为硬性要求且已被占用，不擅自改时间，不保存草稿"
+      }
+    ]
+  }
+}

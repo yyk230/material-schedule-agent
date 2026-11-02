@@ -1,0 +1,9 @@
+{
+  "required_fields": ["title", "category", "copyright_status", "owner"],
+  "banned_words": ["最低", "第一", "国家级", "最佳"],
+  "rules": [
+    {"id": "R001", "desc": "必填字段缺失", "level": "missing"},
+    {"id": "R002", "desc": "标题或摘要含绝对化用语", "level": "high"},
+    {"id": "R003", "desc": "版权状态为 pending，需确认授权", "level": "medium"}
+  ]
+}

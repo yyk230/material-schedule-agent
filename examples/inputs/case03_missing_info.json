@@ -1,0 +1,7 @@
+{
+  "request_id": "REQ-003",
+  "items": [
+    {"material_id": "M02", "channel": "douyin", "date": "2026-11-05", "time": "14:00"},
+    {"material_id": "M03", "channel": "douyin", "date": "2026-11-05", "time": "15:00"}
+  ]
+}

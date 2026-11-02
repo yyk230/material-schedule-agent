@@ -1,0 +1,20 @@
+{
+  "next_seq": 2,
+  "drafts": [
+    {
+      "draft_id": "D-0001",
+      "request_id": "REQ-002",
+      "material_id": "M01",
+      "channel": "douyin",
+      "date": "2026-11-05",
+      "time": "19:00",
+      "state": "pending_confirmation",
+      "pending_confirmations": [
+        "原请求时间 18:00 已被素材 X90 占用，建议改为同日同渠道（douyin 2026-11-05）的 19:00，请确认是否接受该时段",
+        "如不接受 19:00，可选替代时段还有 17:00、20:00，请告知希望改排的具体时间"
+      ],
+      "created_at": "2026-11-02T17:11:39",
+      "updated_at": "2026-11-02T17:12:06"
+    }
+  ]
+}

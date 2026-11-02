@@ -1,0 +1,9 @@
+{
+  "channels": ["douyin", "bilibili", "xiaohongshu"],
+  "slot_hours": [8, 22],
+  "occupied": [
+    {"channel": "douyin", "date": "2026-11-05", "time": "12:00", "material_id": "X80"},
+    {"channel": "douyin", "date": "2026-11-05", "time": "18:00", "material_id": "X90"},
+    {"channel": "douyin", "date": "2026-11-05", "time": "21:00", "material_id": "X81"}
+  ]
+}

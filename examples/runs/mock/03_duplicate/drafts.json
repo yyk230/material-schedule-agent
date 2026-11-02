@@ -1,0 +1,19 @@
+{
+  "next_seq": 2,
+  "drafts": [
+    {
+      "draft_id": "D-0001",
+      "request_id": "REQ-002",
+      "material_id": "M01",
+      "channel": "douyin",
+      "date": "2026-11-05",
+      "time": "19:00",
+      "state": "pending_confirmation",
+      "pending_confirmations": [
+        "18:00 已被 X90 占用，建议改为 19:00，需用户确认"
+      ],
+      "created_at": "2026-11-02T16:56:55",
+      "updated_at": "2026-11-02T16:56:56"
+    }
+  ]
+}

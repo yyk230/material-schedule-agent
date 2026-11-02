@@ -1,0 +1,172 @@
+{
+  "request": {
+    "request_id": "REQ-001",
+    "items": [
+      {
+        "material_id": "M06",
+        "channel": "douyin",
+        "date": "2026-11-05",
+        "time": "10:00",
+        "time_hard": false
+      }
+    ]
+  },
+  "config": {
+    "mode": "live",
+    "model": "qwen3.8-omni-flash",
+    "max_steps": 20,
+    "max_tool_calls": 40,
+    "max_finish_rejections": 2,
+    "fault": "save=once",
+    "schedule": "data/schedule.json",
+    "state_dir": "<tempdir>"
+  },
+  "steps": [
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "get_material",
+      "args": {
+        "material_id": "M06"
+      },
+      "reason": "先读取 M06 素材元数据，了解字段完整性与请求时间属性",
+      "ok": true,
+      "summary": "《家常菜三分钟教程》；字段完整",
+      "error_code": null,
+      "model_note": "I'll start by reading the material metadata and running the rule check."
+    },
+    {
+      "step": 1,
+      "kind": "tool",
+      "tool": "check_rules",
+      "args": {
+        "material_id": "M06"
+      },
+      "reason": "对 M06 做审核规则检查，确认风险等级与缺失字段",
+      "ok": true,
+      "summary": "风险 none；命中 无；缺失 无",
+      "error_code": null,
+      "model_note": null
+    },
+    {
+      "step": 2,
+      "kind": "tool",
+      "tool": "query_slots",
+      "args": {
+        "material_id": "M06",
+        "time": "10:00"
+      },
+      "reason": "M06 无风险且字段完整，查询 douyin 2026-11-05 10:00 是否可用",
+      "ok": true,
+      "summary": "10:00 可用；可选 11:00/09:00/08:00",
+      "error_code": null,
+      "model_note": "Material is complete with no risk. Now checking whether the requested 10:00 slot is available."
+    },
+    {
+      "step": 3,
+      "kind": "tool",
+      "tool": "save_schedule_draft",
+      "args": {
+        "material_id": "M06",
+        "time": "10:00",
+        "pending_confirmations": []
+      },
+      "reason": "M06 字段完整、无风险，请求时间 10:00 可用，按原时间保存草稿",
+      "ok": false,
+      "summary": "保存失败: tool_unavailable - 草稿存储暂时不可用，本次未保存",
+      "error_code": "tool_unavailable",
+      "model_note": "请求时间可用，保存排期草稿。"
+    },
+    {
+      "step": 4,
+      "kind": "tool",
+      "tool": "save_schedule_draft",
+      "args": {
+        "material_id": "M06",
+        "pending_confirmations": [],
+        "time": "10:00"
+      },
+      "reason": "上次保存因草稿存储暂时不可用失败，属瞬时错误，重试一次以完成排期",
+      "ok": true,
+      "summary": "已保存 D-0001 10:00 (ready)",
+      "error_code": null,
+      "model_note": "保存失败（草稿存储暂时不可用），我重试一次。"
+    },
+    {
+      "step": 5,
+      "kind": "finish",
+      "tool": "finish",
+      "args": {
+        "results": [
+          {
+            "material_id": "M06",
+            "decision": "approved",
+            "suggested_time": "10:00",
+            "pending_confirmations": [],
+            "reason": "M06《家常菜三分钟教程》字段完整、版权 authorized，规则检查风险等级 none；douyin 2026-11-05 10:00 时段可用，已按请求时间保存排期草稿 D-0001（首次保存遇草稿存储瞬时不可用，重试后成功），无需额外确认项。注意：仅为草稿，尚未发布。"
+          }
+        ]
+      },
+      "reason": "",
+      "ok": true,
+      "summary": "结论: M06=approved",
+      "error_code": null,
+      "model_note": "草稿保存成功（D-0001）。现在提交结论。"
+    }
+  ],
+  "report": {
+    "run_status": "completed",
+    "incomplete_reason": null,
+    "error": null,
+    "request_id": "REQ-001",
+    "mode": "live",
+    "model": "qwen3.8-omni-flash",
+    "steps_used": 5,
+    "tool_calls_used": 5,
+    "finish_rejections": 0,
+    "summary": {
+      "incomplete": [],
+      "blocked": [],
+      "info_missing": [],
+      "save_failed": [],
+      "needs_confirmation": [],
+      "ready": [
+        "M06"
+      ]
+    },
+    "items": [
+      {
+        "material_id": "M06",
+        "review_status": "approved",
+        "risk_level": "none",
+        "risk_reasons": [],
+        "missing_fields": [],
+        "requested_slot": {
+          "channel": "douyin",
+          "date": "2026-11-05",
+          "time": "10:00"
+        },
+        "suggested_slot": {
+          "channel": "douyin",
+          "date": "2026-11-05",
+          "time": "10:00"
+        },
+        "slot_changed": false,
+        "pending_confirmations": [],
+        "draft": {
+          "status": "saved",
+          "draft_id": "D-0001",
+          "state": "ready",
+          "error": null
+        },
+        "active_draft": {
+          "draft_id": "D-0001",
+          "time": "10:00",
+          "state": "ready"
+        },
+        "publish_status": "not_published",
+        "reason": "M06《家常菜三分钟教程》字段完整、版权 authorized，规则检查风险等级 none；douyin 2026-11-05 10:00 时段可用，已按请求时间保存排期草稿 D-0001（首次保存遇草稿存储瞬时不可用，重试后成功），无需额外确认项。注意：仅为草稿，尚未发布。"
+      }
+    ]
+  }
+}

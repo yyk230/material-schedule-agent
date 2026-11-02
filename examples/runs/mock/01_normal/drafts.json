@@ -1,0 +1,17 @@
+{
+  "next_seq": 2,
+  "drafts": [
+    {
+      "draft_id": "D-0001",
+      "request_id": "REQ-001",
+      "material_id": "M06",
+      "channel": "douyin",
+      "date": "2026-11-05",
+      "time": "10:00",
+      "state": "ready",
+      "pending_confirmations": [],
+      "created_at": "2026-11-02T16:56:55",
+      "updated_at": "2026-11-02T16:56:55"
+    }
+  ]
+}

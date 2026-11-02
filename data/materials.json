@@ -1,0 +1,9 @@
+[
+  {"id": "M01", "title": "秋季通勤穿搭指南", "category": "时尚", "summary": "五套适合上班族的秋季通勤搭配示范", "copyright_status": "authorized", "owner": "张三"},
+  {"id": "M02", "title": "城市夜跑 Vlog", "category": "运动", "summary": "记录一次滨江夜跑路线与配速心得", "copyright_status": null, "owner": "李四"},
+  {"id": "M03", "title": "周末露营装备清单", "category": "户外", "summary": "新手两天一夜露营需要准备的装备", "copyright_status": "authorized", "owner": null},
+  {"id": "M04", "title": "全网最低价！双11囤货清单", "category": "电商", "summary": "整理双11期间家居日用品的优惠信息", "copyright_status": "authorized", "owner": "王五"},
+  {"id": "M05", "title": "经典电影混剪合集", "category": "影视", "summary": "十部经典电影名场面混剪", "copyright_status": "pending", "owner": "赵六"},
+  {"id": "M06", "title": "家常菜三分钟教程", "category": "美食", "summary": "番茄炒蛋的快速做法与火候技巧", "copyright_status": "authorized", "owner": "钱七"},
+  {"id": "M07", "title": "新品发布会预告", "category": "品牌", "summary": "品牌秋季新品发布会时间与看点预告", "copyright_status": "authorized", "owner": "孙八"}
+]
